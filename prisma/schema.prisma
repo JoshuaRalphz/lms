@@ -1,0 +1,346 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+//run npx prisma generate every time you make a change to your schema.prisma file.
+// npx prisma db push ----------- to deploy your changes to the database. - 2
+
+//node scripts\seed.ts -------- to seed the database - 3
+
+// npx prisma studio to open the prisma database
+// npx prisma migrate reset ---------- reset database delete all - 1
+
+//npx prisma generate  always do when changing something
+//npx prisma studio ------ for ui
+
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Course {
+  id           String  @id @default(uuid())
+  instructorId String
+  title        String  @db.Text
+  subtitle     String? @db.Text
+  description  String? @db.Text
+  imageUrl     String? @db.Text
+  price        Float?
+  isPublished  Boolean @default(false)
+  isFree       Boolean @default(false)
+  courseAnalytics CourseAnalytics?
+  courseAnalyticsid String?
+  views Int @default(0)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  levelId String?
+  level   Level?  @relation(fields: [levelId], references: [id])
+
+  sections Section[]
+
+  purchases Purchase[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  avgRating Float? @default(0.0)
+  totalReviews Int? @default(0)
+
+  @@index([categoryId])
+  @@index([levelId])
+  Certificate Certificate[]
+  Review Review[]
+  Analytics Analytics[]
+  @@index([courseAnalyticsid])
+  @@index([isPublished])
+  @@index([createdAt])
+}
+
+model Category {
+  id            String        @id @default(uuid())
+  name          String        @unique
+  courses       Course[]
+
+  Quiz Quiz[]
+
+  UserInterest UserInterest[]
+}
+
+
+model Level {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  courses Course[]
+}
+
+model Section {
+  id          String  @id @default(uuid())
+  title       String
+  description String? @db.Text
+  videoUrl    String? @db.Text
+  position    Int
+  isPublished Boolean @default(false)
+  isFree      Boolean @default(false)
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  muxData MuxData?
+
+  resources Resource[]
+
+  progress Progress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@index([courseId])
+  comments Comment[]
+  Analytics Analytics[]
+}
+
+model MuxData {
+  id         String  @id @default(uuid())
+  assetId    String
+  playbackId String?
+
+  sectionId String  @unique
+  section   Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@index([sectionId])
+}
+
+model Resource {
+  id      String @id @default(uuid())
+  name    String
+  fileUrl String
+
+  sectionId String
+  section   Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@index([sectionId])
+}
+
+model Progress {
+  id        String @id @default(uuid())
+  studentId String 
+
+  sectionId String
+  section   Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  isCompleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@index([sectionId])
+  @@unique([studentId, sectionId])
+}
+
+model Purchase {
+  id         String @id @default(uuid())
+  customerId String 
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@index([courseId])
+  @@unique([customerId, courseId])
+}
+
+model StripeCustomer {
+  id               String @id @default(uuid())
+  customerId       String @unique
+  stripeCustomerId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+
+model Certificate {
+  id        String   @id @default(uuid())
+  studentId String
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  issuedAt  DateTime @default(now())
+  pdfUrl    String?
+  pdfData   String @db.Text
+
+  @@unique([studentId, courseId])
+  @@index([courseId])
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String?
+  email     String?  @unique
+  imageUrl  String?  // Add this line
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+
+
+  Comment Comment[]
+
+  Review Review[]
+
+  Quiz Quiz[]
+
+  QuizAttempt QuizAttempt[]
+
+
+  Analytics Analytics[]
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  text      String   @db.Text
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  sectionId String
+  section   Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userName  String?
+  userImage String?
+
+  @@index([sectionId])
+  @@index([userId])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  text      String   @db.Text
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userName  String?
+  userImage String?
+
+  @@index([courseId])
+  @@index([userId])
+}
+
+model Quiz {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  difficulty  String   @default("Beginner")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  instructorId String
+  instructor  User     @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  questions   Question[]
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  attempts    Int         @default(0)
+  averageScore Float       @default(0)
+  
+  @@index([instructorId])
+  @@index([categoryId])
+  QuizAttempt QuizAttempt[]
+  Analytics Analytics[]
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  quizId      String
+  question    String
+  type        String   @default("multiple-choice")
+  options     String?  @db.Text
+  correctAnswer String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  quiz Quiz @relation(fields: [quizId], references: [id])
+  
+  @@index([quizId])
+}
+
+model QuizAttempt {
+  id        String @id @default(uuid())
+  userId    String
+  quizId    String
+  score     Float
+  createdAt DateTime @default(now())
+  
+  quiz Quiz @relation(fields: [quizId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  
+  @@index([quizId])
+  @@index([userId])
+}
+
+model UserInterest {
+  id        String   @id @default(uuid())
+  userId    String
+  categoryId String
+  category  Category @relation(fields: [categoryId], references: [id])
+  
+  @@unique([userId, categoryId])
+  @@index([categoryId])
+}
+
+
+
+
+model Analytics {
+  id        String   @id @default(uuid())
+  type      String   // e.g., 'page_view', 'course_view', 'quiz_attempt'
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  courseId  String?
+  course    Course?  @relation(fields: [courseId], references: [id])
+  quizId    String?
+  quiz      Quiz?    @relation(fields: [quizId], references: [id])
+  sectionId String?
+  section   Section? @relation(fields: [sectionId], references: [id])
+  metadata  Json?    // Additional data in JSON format
+  createdAt DateTime @default(now())
+  
+  @@index([type])
+  @@index([userId])
+  @@index([courseId])
+  @@index([quizId])
+  @@index([sectionId])
+}
+
+model CourseAnalytics {
+  id        String   @id @default(uuid())
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  String   @unique
+  views     Int      @default(0)
+  purchases Int      @default(0)
+  completions Int    @default(0)
+  avgRating Float?   @default(0.0)
+}
+
+model QuizAnalytics {
+  id        String   @id @default(uuid())
+  quizId    String
+  attempts  Int      @default(0)
+  avgScore  Float?   @default(0.0)
+  
+  @@unique([quizId])
+}

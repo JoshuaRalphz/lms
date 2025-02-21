@@ -82,6 +82,7 @@ const CourseCard = ({ course, progressPercentage }: CourseCardProps) => {
   return (
     <Link 
       href={`/courses/${course.id}/overview`} 
+      onClick={handleClick}
       className="block overflow-hidden cursor-pointer border-2 border-[#A9B5DF] rounded-lg bg-white shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:border-[#7886C7] group"
     >
       <div className="relative aspect-video w-full">

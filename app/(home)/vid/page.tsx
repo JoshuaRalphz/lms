@@ -106,7 +106,7 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
               </div>
               <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
-                  {courses.reduce((sum, course) => sum + (course.views || 0), 0).toLocaleString()}
+                  {courses.reduce((sum, course) => sum + (course.courseAnalytics?.views || 0), 0).toLocaleString()}
                 </h3>
                 <p className="text-xs md:text-sm text-gray-200">Views</p>
               </div>

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { RatingStars } from "@/components/courses/RatingStars";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface Instructor {
   imageUrl: string;
@@ -51,19 +52,32 @@ const CourseCard = ({ course, progressPercentage }: CourseCardProps) => {
     const fetchData = async () => {
       try {
         const instructorResponse = await fetch(`/api/users/${course.instructorId}`);
+        if (!instructorResponse.ok) {
+          throw new Error(`HTTP error! status: ${instructorResponse.status}`);
+        }
         const instructorData = await instructorResponse.json();
+
         setInstructor({
           imageUrl: instructorData.imageUrl,
           fullName: `${instructorData.firstName} ${instructorData.lastName}`
         });
 
         if (course.levelId) {
-          const levelResponse = await fetch(`/api/levels/${course.levelId}`);
-          const levelData = await levelResponse.json();
-          setLevel(levelData);
+          try {
+            const levelResponse = await fetch(`/api/levels/${course.levelId}`);
+            if (!levelResponse.ok) {
+              console.error(`Level not found for ID: ${course.levelId}`);
+              return;
+            }
+            const levelData = await levelResponse.json();
+            setLevel(levelData);
+          } catch (error) {
+            console.error("Error fetching level:", error);
+          }
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+        // Handle the error appropriately, e.g., show a toast notification
       }
     }
     
@@ -92,7 +106,6 @@ const CourseCard = ({ course, progressPercentage }: CourseCardProps) => {
           src={course.imageUrl ? course.imageUrl : "/image_placeholder.webp"}
           alt={course.title}
           fill
-          loading="lazy"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="rounded-t-lg object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -155,6 +168,17 @@ const CourseCard = ({ course, progressPercentage }: CourseCardProps) => {
           {course.price === 0 ? "Free" : `₱ ${course.price}`}
         </p>
       </div>
+
+      <Dialog>
+        <DialogContent aria-describedby="course-description">
+          <DialogHeader>
+            <DialogTitle>{course.title}</DialogTitle>
+            <DialogDescription id="course-description">
+              {course.description || "No description available"}
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </Link>
   );
 };

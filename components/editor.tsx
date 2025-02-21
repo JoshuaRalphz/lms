@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css"; // Import Quill's default theme styles
 
@@ -12,7 +12,10 @@ interface EditorProps {
 export const Editor = ({ onChange, value }: EditorProps) => {
     // Dynamically load ReactQuill to ensure compatibility with Next.js
     const ReactQuill = useMemo(
-        () => dynamic(() => import("react-quill"), { ssr: false }),
+        () => dynamic(() => import("react-quill"), { 
+            ssr: false,
+            loading: () => <p>Loading editor...</p>
+        }),
         []
     );
 
@@ -26,6 +29,9 @@ export const Editor = ({ onChange, value }: EditorProps) => {
             ["link", "image"], // Links and images
             ["clean"], // Clear formatting
         ],
+        clipboard: {
+            matchVisual: false,
+        },
     };
 
     const formats = [

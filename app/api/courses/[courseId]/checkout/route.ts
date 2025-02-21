@@ -10,11 +10,9 @@ export const POST = async (
   { params }: { params: { courseId: string } }
 ) => {
   try {
-    console.log('Initiating checkout for course:', params.courseId);
     const user = await currentUser();
 
     if (!user || !user.id || !user.emailAddresses?.[0]?.emailAddress) {
-      console.log('Unauthorized access attempt');
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
@@ -23,7 +21,6 @@ export const POST = async (
     });
 
     if (!course) {
-      console.log('Course not found:', params.courseId);
       return new NextResponse("Course Not Found", { status: 404 });
     }
 
@@ -35,20 +32,6 @@ export const POST = async (
 
     if (purchase) {
       return new NextResponse("Course Already Purchased", { status: 400 });
-    }
-
-    // Handle free courses
-    if (course.price === 0 || course.isFree) {
-      await db.purchase.create({
-        data: {
-          customerId: user.id,
-          courseId: course.id,
-        },
-      });
-      
-      return NextResponse.json({ 
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/courses/${course.id}/overview?success=true`
-      });
     }
 
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
@@ -81,14 +64,14 @@ export const POST = async (
         },
       });
     }
-
+``
     const session = await stripe.checkout.sessions.create({
       customer: stripeCustomer.stripeCustomerId,
       payment_method_types: ["card"],
       line_items,
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/courses/${course.id}/overview?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/courses/${course.id}/overview?canceled=true`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${course.id}/overview?success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${course.id}/overview?canceled=true`,
       metadata: {
         courseId: course.id,
         customerId: user.id,
@@ -97,7 +80,7 @@ export const POST = async (
 
     return NextResponse.json({ url: session.url })
   } catch (err) {
-    console.error("[courseId_checkout_POST] Error:", err);
+    console.log("[courseId_checkout_POST]", err);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 };

@@ -9,7 +9,11 @@ import { ConfettiProvider } from "@/components/providers/confetti-provider";
 import { PWAInstallButton } from "@/components/PWAInstallButton";
 import { PWALifecycle } from "@/components/PWALifecycle";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true
+});
 
 export const metadata: Metadata = {
   title: "DevPath - E Learning",

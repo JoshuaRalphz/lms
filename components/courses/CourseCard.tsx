@@ -1,11 +1,20 @@
 "use client"
 
-import { useUser, useAuth,  } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { RatingStars } from "@/components/courses/RatingStars";
+
+interface Instructor {
+  imageUrl: string;
+  fullName: string;
+}
+
+interface Level {
+  name: string;
+}
 
 interface CourseCardProps {
   course: {
@@ -32,16 +41,6 @@ interface CourseCardProps {
   progressPercentage?: number;
 }
 
-interface Instructor {
-  imageUrl?: string;
-  fullName?: string;
-}
-
-interface Level {
-  name: string;
-}
-
-
 const CourseCard = ({ course, progressPercentage }: CourseCardProps) => {
   const { isSignedIn } = useAuth();
   const router = useRouter();
@@ -67,11 +66,14 @@ const CourseCard = ({ course, progressPercentage }: CourseCardProps) => {
         console.error("Error fetching data:", error);
       }
     }
-    fetchData();
+    
+    if (typeof window !== 'undefined') {
+      fetchData();
+    }
   }, [course.instructorId, course.levelId]);
 
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent default link behavior
+    e.preventDefault();
     if (!isSignedIn) {
       router.push('/sign-in');
     } else {

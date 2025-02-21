@@ -15,14 +15,20 @@ interface EnrollButtonProps {
 export const EnrollButton = ({
   courseId,
   price,
-  isInstructor
+  isInstructor,
+  className
 }: EnrollButtonProps) => {
   const router = useRouter();
 
   const handleClick = async () => {
     try {
       const response = await axios.post(`/api/courses/${courseId}/checkout`);
-      window.location.assign(response.data.url);
+      
+      if (response.data?.url) {
+        window.location.assign(response.data.url);
+      } else {
+        throw new Error('No URL returned from checkout');
+      }
     } catch (err) {
       console.error("Purchase failed:", err);
       toast.error("Failed to initiate purchase");
@@ -31,8 +37,8 @@ export const EnrollButton = ({
   };
 
   return (
-    <Button onClick={handleClick}>
-      {price === 0 ? "Enroll Now" : ` ${price === 0 ? 'Free' : `Buy for ₱ ${price}`}`}
+    <Button onClick={handleClick} className={className}>
+      {price === 0 ? "Enroll Now" : `Buy for ₱${price}`}
     </Button>
   );
 }; 

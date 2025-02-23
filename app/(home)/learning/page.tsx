@@ -5,8 +5,7 @@ import { redirect } from "next/navigation"
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { UserGreeting } from "@/components/layout/UserGreeting";
-import { EmptyState } from "@/components/learning/EmptyState";
-import { LearningStatsWrapper } from "@/components/learning/LearningStatsWrapper";
+
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 // Lazy load components
@@ -144,11 +143,6 @@ const LearningPage = async () => {
         <h1 className="text-xl sm:text-2xl font-bold mt-6 sm:mt-8 mb-4 sm:mb-5">
           My Learning Dashboard
         </h1>
-
-        <LearningStatsWrapper 
-          purchasedCourses={purchasedCourses}
-          takenQuizzes={takenQuizzes}
-        />
 
         <div className="space-y-8 sm:space-y-12">
           <Suspense fallback={<LoadingSpinner />}>

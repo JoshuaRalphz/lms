@@ -152,11 +152,18 @@ const LearningPage = async () => {
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <UserGreeting />
-          <Link href="/preference" className="w-full sm:w-auto">
-            <Button variant="outline" className="w-full sm:w-auto">
-              Change Interests
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <Link href="/verify" className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto">
+                Verify Certificate
+              </Button>
+            </Link>
+            <Link href="/preference" className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto">
+                Change Interests
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <h1 className="text-xl sm:text-2xl font-bold mt-6 sm:mt-8 mb-4 sm:mb-5">

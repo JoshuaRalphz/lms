@@ -156,7 +156,15 @@ export default async function Vid() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {mostPopularCourses.map((course) => (
-              <CourseCard key={course.id} course={course} />
+              <CourseCard 
+                key={course.id} 
+                course={{
+                  ...course,
+                  subtitle: course.subtitle || undefined,
+                  price: course.price ?? undefined,
+                  imageUrl: course.imageUrl || undefined
+                }} 
+              />
             ))}
           </div>
         </div>
@@ -170,7 +178,15 @@ export default async function Vid() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {topRatedCourses.map((course) => (
-              <CourseCard key={course.id} course={course} />
+              <CourseCard 
+                key={course.id} 
+                course={{
+                  ...course,
+                  subtitle: course.subtitle || undefined,
+                  price: course.price ?? undefined,
+                  imageUrl: course.imageUrl || undefined
+                }} 
+              />
             ))}
           </div>
         </div>

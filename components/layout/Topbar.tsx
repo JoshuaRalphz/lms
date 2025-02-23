@@ -30,7 +30,7 @@ const Topbar = () => {
           { path: "/instructor/analytics", label: "Webinar Analytics", icon: <BarChart2Icon className="h-4 w-4" /> },
         ]
       : [
-          { path: "/vid", label: "Courses", icon: <BookOpen className="h-4 w-4" /> },
+          { path: "/vid", label: "Webinar", icon: <BookOpen className="h-4 w-4" /> },
           { path: "/quizzes", label: "Assessments", icon: <ClipboardList className="h-4 w-4" /> },
           { path: "/learning", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
         ]

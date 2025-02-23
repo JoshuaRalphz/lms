@@ -62,7 +62,7 @@ const EditSectionForm = ({ section, courseId, isCompleted }: EditSectionFormProp
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(`/api/courses/${courseId}/sections/${section.id}`, values);
-      toast.success("Course Chapter Updated");
+      toast.success("Webinar Chapter Updated");
       
       setTimeout(() => {
         toast.success("Refreshing the page…");
@@ -90,7 +90,7 @@ const EditSectionForm = ({ section, courseId, isCompleted }: EditSectionFormProp
       <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4">
         <Link href={`/instructor/courses/${courseId}/basic`}>
           <Button variant="ghost" className="text-sm font-medium flex items-center gap-2">
-            <ArrowLeft className="h-5 w-5" /> Back to Course page
+            <ArrowLeft className="h-5 w-5" /> Back to previous page
           </Button>
         </Link>
         <div className="flex gap-3">

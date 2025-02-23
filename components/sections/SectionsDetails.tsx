@@ -20,7 +20,6 @@ import { Input } from "@/components/ui/input";
 
 import ReadText from "@/components/custom/ReadText";
 import Link from "next/link";
-import ProgressButton from "./ProgressButton";
 import { formatPrice } from "@/lib/formatPrice";
 import type { MuxPlayerRefAttributes } from '@mux/mux-player-react';
 import { debounce } from 'lodash';
@@ -248,8 +247,8 @@ const SectionsDetails = ({
           <Lock className="h-12 w-12 m-5" />
           <p className="text-l font-bold mb-10">
             {course.price === 0
-              ? "Video for this section is set to free by the instructor! Please click 'Enrol Now' to have access to the course"
-              : "Video for this section is locked! Please buy the course to access"}
+              ? "Video for this section is set to free Please click 'Enrol Now' to have access to the webinar"
+              : "Video for this section is locked! Please buy the webinar to access"}
           </p>
         </div>
       ) : (
@@ -275,19 +274,10 @@ const SectionsDetails = ({
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <p>{section.isFree || course.price === 0 ? "Enroll Now" : `Buy for ${formatPrice(course.price || 0)}`}</p>
+                <p>{section.isFree || course.price === 0 ? "Join Now" : `Buy for ${formatPrice(course.price || 0)}`}</p>
               )}
             </Button>
-          ) : (
-            <ProgressButton
-              courseId={course.id}
-              sectionId={section.id}
-              isCompleted={!!progress?.isCompleted}
-              progressPercentage={progressPercentage}
-              totalSections={course.sections.length}
-              onComplete={handleSectionComplete}
-            />
-          )}
+          ) : null}
         </div>
       </div>
 

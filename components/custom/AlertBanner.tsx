@@ -38,7 +38,7 @@ const AlertBanner: React.FC<AlertBannerProps> = ({
       </AlertTitle>
       <AlertDescription className="text-sm">
         {isPublished
-          ? "🎉 Your course chapter is live and available to students."
+          ? "🎉 Your webinar session is live and available to students."
           : isCompleted
           ? "🚀 Great job! Ready to publish."
           : "⚠️ You can only publish when all the required fields are completed."}

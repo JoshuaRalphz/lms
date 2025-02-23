@@ -3,7 +3,7 @@
 import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Course } from "@prisma/client";
+import  Course  from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/formatPrice";
 import { RatingStars } from "./RatingStars";
@@ -23,15 +23,27 @@ const SkeletonLoader = () => (
   </div>
 );
 
-interface CourseCardProps {
-  course: Course & {
-    category?: { name: string };
-    Review?: { rating: number }[];
-    purchases?: { id: string }[];
-    courseAnalytics?: { views: number };
-    imagePriority?: boolean;
-    imageLoading?: "eager" | "lazy";
+interface Course {
+  id: string;
+  title: string;
+  subtitle?: string;
+  imageUrl?: string;
+  category?: {
+    name: string;
   };
+  price?: number;
+  isFree?: boolean;
+  Review?: { rating: number }[];
+  purchases?: { id: string }[];
+  courseAnalytics?: {
+    views: number;
+  };
+  imagePriority?: boolean;
+  imageLoading?: "lazy" | "eager";
+}
+
+interface CourseCardProps {
+  course: Course;
 }
 
 export default function CourseCard({ course }: CourseCardProps) {
@@ -118,9 +130,15 @@ export default function CourseCard({ course }: CourseCardProps) {
           </div>
 
           <div className="p-4 flex flex-col gap-2">
-            <h3 className="font-semibold line-clamp-2" title={course.title}>
+            <h1 className="font-semibold line-clamp-2" title={course.title}>
               {course.title}
-            </h3>
+            </h1>
+
+            {course.subtitle && (
+              <h3 className="text-sm text-gray-500 line-clamp-1" title={course.subtitle}>
+                Speaker: {course.subtitle}
+              </h3>
+            )}
 
             {course.category && (
               <span className="text-sm text-gray-500">
@@ -156,7 +174,8 @@ export default function CourseCard({ course }: CourseCardProps) {
               variant="outline"
               aria-label={`View course ${course.title}`}
             >
-              View Webinar            </Button>
+              View Webinar
+            </Button>
           </div>
         </article>
       ) : (

@@ -54,6 +54,7 @@ const CourseBasics = async ({ params }: { params: { courseId: string } }) => {
 
   const requiredFields = [
     course.title,
+    course.subtitle,
     course.description,
     course.categoryId,
     course.imageUrl,
@@ -115,7 +116,7 @@ const CourseBasics = async ({ params }: { params: { courseId: string } }) => {
         <div>
           <div className="flex items-center gap-x-2">
             <IconBadge icon={LayoutDashboard} />
-            <h2 className="text-xl">Customize your course</h2>
+            <h2 className="text-xl">Customize your webinar</h2>
           </div>
           <TitleForm initialData={course} courseId={course.id} />
           <SubTitleForm initialData={course} courseId={course.id} />
@@ -127,7 +128,7 @@ const CourseBasics = async ({ params }: { params: { courseId: string } }) => {
             <div>
               <div className="flex items-center gap-x-2">
                 <IconBadge icon={ListChecks} />
-                <h2 className="text-xl">Course chapters</h2>
+                <h2 className="text-xl">Webinar sessions</h2>
               </div>
               <ChaptersForm initialData={course} courseId={course.id} />
               <CategoryForm

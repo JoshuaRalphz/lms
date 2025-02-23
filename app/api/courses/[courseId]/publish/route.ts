@@ -35,18 +35,18 @@ export const POST = async (
 
     if (
       !course.title ||
+      !course.subtitle ||
       !course.description ||
       !course.categoryId ||
-
       !course.imageUrl ||
       (!course.isFree && !course.price) ||
       !isPublishedSections
     ) {
       console.log('Missing fields:', {
         title: !!course.title,
+        subtitle: !!course.subtitle,
         description: !!course.description,
         categoryId: !!course.categoryId,
-
         imageUrl: !!course.imageUrl,
         price: course.isFree ? true : !!course.price,
         publishedSections: isPublishedSections

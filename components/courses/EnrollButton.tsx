@@ -32,7 +32,7 @@ export const EnrollButton = ({
 
   return (
     <Button onClick={handleClick}>
-      {price === 0 ? "Enroll Now" : ` ${price === 0 ? 'Free' : `Buy for ₱ ${price}`}`}
+      {price === 0 ? "Join Now" : ` ${price === 0 ? 'Free' : `Buy for ₱ ${price}`}`}
     </Button>
   );
 }; 

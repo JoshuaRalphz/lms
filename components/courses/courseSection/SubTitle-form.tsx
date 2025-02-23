@@ -26,11 +26,11 @@ interface SubTitleFormProps {
     courseId: string;
 };
 
-const formSchema = z.object ({
+const formSchema = z.object({
     subtitle: z.string().min(1, {
-        message: "Title is required",
+        message: "Speaker is required",
     })
-})
+});
 
 export const SubTitleForm = ({
     initialData,
@@ -93,7 +93,7 @@ export const SubTitleForm = ({
                                     <FormControl>
                                         <Input
                                         disabled={isSubmitting}
-                                        placeholder="e.g. 'Advance web development'"
+                                        placeholder="Mr.John doe / Mrs.Maria "
                                         {...field}
                                         />
                                     </FormControl>

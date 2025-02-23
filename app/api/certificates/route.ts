@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { generateCertificatePDF } from "@/lib/certificate-generator";
+import { v4 as uuid } from 'uuid';
 
 export const POST = async (req: Request) => {
   try {
@@ -30,32 +31,46 @@ export const POST = async (req: Request) => {
       return new NextResponse("Course not found", { status: 404 });
     }
 
-    const isInstructor = course?.instructorId === userId;
-
-    // Generate certificate regardless of completion status
-    const base64 = await generateCertificatePDF({
-      studentName: studentName,
-      courseName: course.title,
-      date: new Date().toLocaleDateString(),
-    });
-
-    // Update or create the certificate
-    await db.certificate.upsert({
+    // Check if certificate already exists
+    const existingCertificate = await db.certificate.findUnique({
       where: {
         studentId_courseId: {
           studentId: userId,
           courseId,
         }
-      },
-      update: {
-        pdfData: base64
-      },
-      create: {
-        studentId: userId,
-        courseId,
-        pdfData: base64
       }
     });
+
+    let certificateId, verificationCode, base64;
+
+    if (existingCertificate) {
+      // Use existing certificate details
+      certificateId = existingCertificate.certificateId;
+      verificationCode = existingCertificate.verificationCode;
+      base64 = existingCertificate.pdfData;
+    } else {
+      // Generate new certificate
+      certificateId = uuid();
+      verificationCode = uuid();
+      base64 = await generateCertificatePDF({
+        studentName: studentName,
+        courseName: course.title,
+        date: new Date().toLocaleDateString(),
+        certificateId,
+        verificationCode
+      });
+
+      // Create the certificate
+      await db.certificate.create({
+        data: {
+          studentId: userId,
+          courseId,
+          pdfData: base64,
+          certificateId,
+          verificationCode
+        }
+      });
+    }
 
     return NextResponse.json({ pdfData: base64 });
   } catch (error) {

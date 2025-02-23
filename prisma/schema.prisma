@@ -170,11 +170,16 @@ model StripeCustomer {
 model Certificate {
   id        String   @id @default(uuid())
   studentId String
+  student   User     @relation(fields: [studentId], references: [id])
   courseId  String
   course    Course   @relation(fields: [courseId], references: [id])
   issuedAt  DateTime @default(now())
   pdfUrl    String?
   pdfData   String @db.Text
+  verificationCode String @unique @default(uuid())
+  certificateId String @unique
+
+
 
   @@unique([studentId, courseId])
   @@index([courseId])
@@ -182,6 +187,8 @@ model Certificate {
 
 model User {
   id        String    @id @default(uuid())
+  firstName String?
+  lastName  String?
   name      String?
   email     String?  @unique
   imageUrl  String?  // Add this line
@@ -199,6 +206,8 @@ model User {
 
 
   Analytics Analytics[]
+
+  Certificate Certificate[]
 }
 
 model Comment {

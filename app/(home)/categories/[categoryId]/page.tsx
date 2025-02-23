@@ -2,7 +2,6 @@ import getCoursesByCategory from "@/app/actions/getCourses";
 import CourseCard from "@/components/courses/CourseCard";
 import Categories from "@/components/custom/Categories";
 import { db } from "@/lib/db";
-import  CourseWithReviews  from "@/app/actions/getCourses";
 
 const CoursesByCategory = async ({
   params,
@@ -26,15 +25,12 @@ const CoursesByCategory = async ({
             key={course.id} 
             course={{
               ...course,
+              subtitle: course.subtitle || '',
               category: course.category || { name: 'Uncategorized' },
               Review: course.Review || [],
               purchases: course.purchases || [],
-              views: course.views || 0,
-              instructorId: course.instructorId,
-              categoryId: course.categoryId,
-              price: course.price || null,
-              imageUrl: course.imageUrl || null,
-              description: course.description || null
+              price: course.price ?? undefined,
+              imageUrl: course.imageUrl || undefined
             }}
           />
         ))}

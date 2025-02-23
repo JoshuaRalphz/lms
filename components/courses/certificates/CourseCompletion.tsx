@@ -27,7 +27,7 @@ interface Course {
   isFree: boolean;
   courseAnalytics: any | null;
   totalReviews: number | null;
-  courseAnalyticsid?: string | null;
+  courseAnalyticsId?: string | null;
   views?: number | null;
   createdAt?: Date | null;
   updatedAt?: Date | null;
@@ -85,8 +85,9 @@ export const CourseCompletion = ({ courseId }: { courseId: string }) => {
       <Dialog open={showSimilarCourses} onOpenChange={setShowSimilarCourses}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Congratulations! Here are some similar webinar you might like</DialogTitle>
+            <DialogTitle>Congratulations! Here are some similar webinars you might like</DialogTitle>
           </DialogHeader>
+          <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center">Free Webinars</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {similarCourses.map((course) => (
               <Link 
@@ -99,18 +100,11 @@ export const CourseCompletion = ({ courseId }: { courseId: string }) => {
                     course={{
                       ...course,
                       title: course.title.length > 50 ? `${course.title.substring(0, 50)}...` : course.title,
-                      description: course.description || null,
-                      imageUrl: course.imageUrl || null,
-                      subtitle: course.subtitle || null,
-                      isPublished: true,
+                      subtitle: course.subtitle || '',
                       isFree: false,
                       courseAnalytics: undefined,
-                      totalReviews: course.Review?.length || null,
-                      courseAnalyticsid: course.courseAnalyticsid || null,
-                      views: course.views || 0,
-                      createdAt: course.createdAt || new Date(),
-                      updatedAt: course.updatedAt || new Date(),
-                      avgRating: course.avgRating || 0
+                      imageUrl: course.imageUrl || undefined,
+                      price: course.price ?? undefined
                     }} 
                   />
                 </div>

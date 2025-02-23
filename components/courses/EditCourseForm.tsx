@@ -98,7 +98,7 @@ const EditCourseForm = ({
       <div className="flex justify-between items-center mb-6">
         <Link href={`/instructor/courses`} className="flex items-center hover:opacity-75 transition">
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to courses
+          Back to previous page
         </Link>
         
         <div className="flex gap-5 items-start">

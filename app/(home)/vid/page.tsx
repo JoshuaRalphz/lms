@@ -124,6 +124,9 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
                   key={course.id} 
                   course={{
                     ...course,
+                    subtitle: course.subtitle || "",
+                    price: course.price ?? undefined,
+                    imageUrl: course.imageUrl || undefined,
                     courseAnalytics: course.courseAnalytics || undefined
                   }} 
                 />
@@ -141,6 +144,9 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
                     key={course.id} 
                     course={{
                       ...course,
+                      subtitle: course.subtitle || "",
+                      price: course.price ?? undefined,
+                      imageUrl: course.imageUrl || undefined,
                       courseAnalytics: course.courseAnalytics || undefined
                     }} 
                   />
@@ -157,6 +163,9 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
                     key={course.id} 
                     course={{
                       ...course,
+                      subtitle: course.subtitle || "",
+                      price: course.price ?? undefined,
+                      imageUrl: course.imageUrl || undefined,
                       courseAnalytics: course.courseAnalytics || undefined
                     }} 
                   />
@@ -173,6 +182,9 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
                     key={course.id} 
                     course={{
                       ...course,
+                      subtitle: course.subtitle || "",
+                      price: course.price ?? undefined,
+                      imageUrl: course.imageUrl || undefined,
                       courseAnalytics: course.courseAnalytics || undefined
                     }} 
                   />
@@ -189,6 +201,9 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
                     key={course.id} 
                     course={{
                       ...course,
+                      subtitle: course.subtitle || "",
+                      price: course.price ?? undefined,
+                      imageUrl: course.imageUrl || undefined,
                       courseAnalytics: course.courseAnalytics || undefined
                     }} 
                   />

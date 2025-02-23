@@ -12,7 +12,6 @@ import { useRouter } from "next/navigation";
 interface CourseCardProps {
   course: Course & {
     category?: { name: string };
-    level?: { name: string };
     Review?: { rating: number }[];
     purchases?: { id: string }[];
     courseAnalytics?: { views: number };

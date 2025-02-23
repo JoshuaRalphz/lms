@@ -22,6 +22,16 @@ interface Course {
   level: { name: string } | null;
   category: { name: string };
   price: number | null;
+  subtitle?: string | null;
+  isPublished: boolean;
+  isFree: boolean;
+  courseAnalytics: any | null;
+  totalReviews: number | null;
+  courseAnalyticsid?: string | null;
+  views?: number | null;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
+  avgRating?: number | null;
 }
 
 export const CourseCompletion = ({ courseId }: { courseId: string }) => {
@@ -89,9 +99,18 @@ export const CourseCompletion = ({ courseId }: { courseId: string }) => {
                     course={{
                       ...course,
                       title: course.title.length > 50 ? `${course.title.substring(0, 50)}...` : course.title,
-                      description: course.description && course.description.length > 100 
-                        ? `${course.description.substring(0, 100)}...` 
-                        : course.description
+                      description: course.description || null,
+                      imageUrl: course.imageUrl || null,
+                      subtitle: course.subtitle || null,
+                      isPublished: true,
+                      isFree: false,
+                      courseAnalytics: undefined,
+                      totalReviews: course.Review?.length || null,
+                      courseAnalyticsid: course.courseAnalyticsid || null,
+                      views: course.views || 0,
+                      createdAt: course.createdAt || new Date(),
+                      updatedAt: course.updatedAt || new Date(),
+                      avgRating: course.avgRating || 0
                     }} 
                   />
                 </div>

@@ -36,9 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       orderBy: { name: 'asc' },
     });
 
-    const levels = await db.level.findMany();
-
-    res.status(200).json({ course, categories, levels });
+    res.status(200).json({ course, categories });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
   }

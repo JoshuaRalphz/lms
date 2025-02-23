@@ -26,7 +26,6 @@ const CoursesByCategory = async ({
             key={course.id} 
             course={{
               ...course,
-              sections: course.sections || [],
               category: course.category || { name: 'Uncategorized' },
               Review: course.Review || [],
               purchases: course.purchases || [],

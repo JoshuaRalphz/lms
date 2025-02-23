@@ -48,7 +48,6 @@ export default async function Vid() {
           progress: true
         }
       },
-      level: true,
       category: true,
       Review: true,
       purchases: true

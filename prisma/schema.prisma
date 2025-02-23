@@ -44,8 +44,7 @@ model Course {
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
 
-  levelId String?
-  level   Level?  @relation(fields: [levelId], references: [id])
+
 
   sections Section[]
 
@@ -58,7 +57,6 @@ model Course {
   totalReviews Int? @default(0)
 
   @@index([categoryId])
-  @@index([levelId])
   Certificate Certificate[]
   Review Review[]
   Analytics Analytics[]
@@ -77,12 +75,6 @@ model Category {
   UserInterest UserInterest[]
 }
 
-
-model Level {
-  id      String   @id @default(uuid())
-  name    String   @unique
-  courses Course[]
-}
 
 model Section {
   id          String  @id @default(uuid())

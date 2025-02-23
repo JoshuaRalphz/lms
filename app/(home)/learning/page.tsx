@@ -21,6 +21,13 @@ const RecommendedSection = dynamic(
 );
 const CourseCard = lazy(() => import("@/components/courses/CourseCard"));
 const QuizCard = lazy(() => import("@/components/quiz/QuizCard"));
+const QuizAttemptsSection = dynamic(
+  () => import('@/components/learning/QuizAttemptsSection'),
+  { 
+    loading: () => <LoadingSpinner />,
+    ssr: false 
+  }
+);
 
 const getRecommendedContent = async (userId: string) => {
   const userInterests = await db.userInterest.findMany({
@@ -47,25 +54,35 @@ const getRecommendedContent = async (userId: string) => {
         },
         Review: { select: { rating: true } },
         purchases: { select: { id: true } },
-        level: true
+        courseAnalytics: { select: { views: true } }
       }
     }),
     db.quiz.findMany({
       where: {
         categoryId: { in: userInterests.map(interest => interest.categoryId) }
       },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        questions: { select: { id: true } },
+      include: {
+        questions: true,
         category: true,
-        instructorId: true
+        QuizAttempt: {
+          select: {
+            score: true
+          }
+        }
       }
     })
   ]);
 
-  return { courses, quizzes };
+  // Process quizzes to calculate attempts and average score
+  const processedQuizzes = quizzes.map(quiz => ({
+    ...quiz,
+    attempts: quiz.QuizAttempt.length,
+    averageScore: quiz.QuizAttempt.length > 0 
+      ? quiz.QuizAttempt.reduce((sum, attempt) => sum + attempt.score, 0) / quiz.QuizAttempt.length
+      : 0
+  }));
+
+  return { courses, quizzes: processedQuizzes };
 };
 
 const getProgress = (sections: any[], userId: string) => {
@@ -91,20 +108,20 @@ const LearningPage = async () => {
           isPublished: true,
           purchases: { some: { customerId: userId } }
         },
-        select: {
-          id: true,
-          title: true,
-          imageUrl: true,
+        include: {
           category: { select: { name: true } },
           sections: {
             where: { isPublished: true },
-            select: {
+            include: {
               progress: {
                 where: { studentId: userId },
                 select: { isCompleted: true }
               }
             }
-          }
+          },
+          Review: { select: { rating: true } },
+          purchases: { select: { id: true } },
+          courseAnalytics: { select: { views: true } }
         }
       }),
       db.quizAttempt.findMany({
@@ -153,6 +170,14 @@ const LearningPage = async () => {
 
         <div className="space-y-8 sm:space-y-12">
           <Suspense fallback={<LoadingSpinner />}>
+            {/* Add Quiz Attempts Section */}
+            <QuizAttemptsSection
+              attempts={takenQuizzes}
+              emptyMessage="You haven't taken any quizzes yet."
+              buttonText="Take assessment"
+              href="/quizzes"
+            />
+
             {/* Recommended Courses */}
             <RecommendedSection 
               title="Recommended Courses"
@@ -197,11 +222,11 @@ const LearningPage = async () => {
                     title: quiz.title,
                     description: quiz.description || "",
                     instructorId: quiz.instructorId,
-                    difficulty: "medium",
-                    attempts: 0,
-                    averageScore: 0,
+                    difficulty: quiz.difficulty || "medium",
+                    attempts: quiz.attempts || 0,
+                    averageScore: quiz.averageScore || 0,
                     categoryId: quiz.category?.id,
-                    questions: []
+                    questions: quiz.questions || []
                   }}
                 />
               )}

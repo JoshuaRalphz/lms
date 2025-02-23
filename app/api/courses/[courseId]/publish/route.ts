@@ -38,7 +38,6 @@ export const POST = async (
       !course.description ||
       !course.categoryId ||
 
-      !course.levelId ||
       !course.imageUrl ||
       (!course.isFree && !course.price) ||
       !isPublishedSections
@@ -48,7 +47,6 @@ export const POST = async (
         description: !!course.description,
         categoryId: !!course.categoryId,
 
-        levelId: !!course.levelId,
         imageUrl: !!course.imageUrl,
         price: course.isFree ? true : !!course.price,
         publishedSections: isPublishedSections

@@ -44,7 +44,6 @@ export async function GET(
         sections: true,
         Review: true,
         purchases: true,
-        level: true
       },
       take: 6
     });

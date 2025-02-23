@@ -27,7 +27,6 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
         Review: true,
         purchases: true,
         category: true,
-        level: true,
         courseAnalytics: {
           select: { views: true }
         }
@@ -122,7 +121,13 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
             <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">{selectedCategory.name} Courses</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
               {courses.map((course) => (
-                <CourseCard key={course.id} course={course} />
+                <CourseCard 
+                  key={course.id} 
+                  course={{
+                    ...course,
+                    courseAnalytics: course.courseAnalytics || undefined
+                  }} 
+                />
               ))}
             </div>
           </div>
@@ -133,7 +138,13 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
               <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center">Most Popular</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 {mostPopular.map((course) => (
-                  <CourseCard key={course.id} course={course} />
+                  <CourseCard 
+                    key={course.id} 
+                    course={{
+                      ...course,
+                      courseAnalytics: course.courseAnalytics || undefined
+                    }} 
+                  />
                 ))}
               </div>
             </div>
@@ -143,7 +154,13 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
               <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center">Top Rated</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 {topRated.map((course) => (
-                  <CourseCard key={course.id} course={course} />
+                  <CourseCard 
+                    key={course.id} 
+                    course={{
+                      ...course,
+                      courseAnalytics: course.courseAnalytics || undefined
+                    }} 
+                  />
                 ))}
               </div>
             </div>
@@ -153,7 +170,13 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
               <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center">Recently Uploaded</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 {recentlyUploaded.map((course) => (
-                  <CourseCard key={course.id} course={course} />
+                  <CourseCard 
+                    key={course.id} 
+                    course={{
+                      ...course,
+                      courseAnalytics: course.courseAnalytics || undefined
+                    }} 
+                  />
                 ))}
               </div>
             </div>
@@ -163,7 +186,13 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
               <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center">Free Courses</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 {freeCourses.map((course) => (
-                  <CourseCard key={course.id} course={course} />
+                  <CourseCard 
+                    key={course.id} 
+                    course={{
+                      ...course,
+                      courseAnalytics: course.courseAnalytics || undefined
+                    }} 
+                  />
                 ))}
               </div>
             </div>

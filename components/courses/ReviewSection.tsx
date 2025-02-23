@@ -50,6 +50,8 @@ const RatingStars = React.memo(({ rating }: { rating: number }) => {
   );
 });
 
+RatingStars.displayName = "RatingStars";
+
 export const ReviewSection = ({ courseId, userId, isFree }: ReviewSectionProps) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [newReview, setNewReview] = useState({ text: "", rating: 5 });
@@ -77,7 +79,7 @@ export const ReviewSection = ({ courseId, userId, isFree }: ReviewSectionProps) 
     fetchReviews();
   }, [fetchReviews]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = React.useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newReview.text.trim()) return;
 
@@ -100,7 +102,7 @@ export const ReviewSection = ({ courseId, userId, isFree }: ReviewSectionProps) 
       }
       console.error("Error posting review:", error);
     }
-  };
+  }, [courseId, newReview.text, newReview.rating, userId, reviews]);
 
   const handleDelete = async (reviewId: string) => {
     try {
@@ -140,7 +142,7 @@ export const ReviewSection = ({ courseId, userId, isFree }: ReviewSectionProps) 
 
   const debouncedSubmit = React.useMemo(() => 
     debounce(handleSubmit, 500)
-  , []);
+  , [handleSubmit]);
 
   const ReviewItem = React.memo(({ review, isOwner }: { review: Review, isOwner: boolean }) => {
     return (
@@ -186,6 +188,8 @@ export const ReviewSection = ({ courseId, userId, isFree }: ReviewSectionProps) 
     );
   });
 
+  ReviewItem.displayName = "ReviewItem";
+
   const sortedReviews = React.useMemo(() => 
     reviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
   , [reviews]);
@@ -214,6 +218,8 @@ export const ReviewSection = ({ courseId, userId, isFree }: ReviewSectionProps) 
       </DialogContent>
     </Dialog>
   ));
+
+  PurchaseModal.displayName = "PurchaseModal";
 
   return (
     <div className="mt-8 border-t pt-6">

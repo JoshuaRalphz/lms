@@ -16,7 +16,6 @@ const getCoursesByCategory = async (categoryId: string | null): Promise<CourseWi
     where: whereClause,
     include: {
       category: true,
-      level: true,
       sections: {
         where: {
           isPublished: true,

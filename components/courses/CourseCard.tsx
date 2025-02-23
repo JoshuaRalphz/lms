@@ -138,7 +138,7 @@ export default function CourseCard({ course }: CourseCardProps) {
             <div className="flex items-center justify-between mt-2">
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">
-                  {courseStats.enrollmentCount} members
+                  {courseStats.enrollmentCount} Participants
                 </span>
                 <span className="text-sm text-gray-500">
                   {courseStats.views.toLocaleString()} views
@@ -156,8 +156,7 @@ export default function CourseCard({ course }: CourseCardProps) {
               variant="outline"
               aria-label={`View course ${course.title}`}
             >
-              View Course
-            </Button>
+              View Webinar            </Button>
           </div>
         </article>
       ) : (

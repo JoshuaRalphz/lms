@@ -1,18 +1,16 @@
 "use client"
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { useUser, useAuth } from "@clerk/nextjs";
+import { useMemo, useEffect } from "react";
+import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 interface QuizCardProps {
   quiz: {
     id: string;
     title: string;
     description: string;
-    instructorId: string;
     difficulty: string;
     categoryId?: string;
     questions: {
@@ -21,11 +19,6 @@ interface QuizCardProps {
     attempts: number;
     averageScore: number;
   };
-}
-
-interface Instructor {
-  imageUrl?: string;
-  fullName?: string;
 }
 
 const categoryThumbnails: Record<string, string[]> = {
@@ -74,50 +67,28 @@ const categoryThumbnails: Record<string, string[]> = {
 };
 
 const QuizCard = ({ quiz }: QuizCardProps) => {
-  const { user } = useUser();
   const { isSignedIn } = useAuth();
   const router = useRouter();
-  const [instructor, setInstructor] = useState<Instructor | null>(null);
 
-  useEffect(() => {
-    const fetchInstructor = async () => {
-      try {
-        const response = await fetch(`/api/users/${quiz.instructorId}`);
-        const data = await response.json();
-        setInstructor({imageUrl: data.imageUrl,
-        fullName: `${data.firstName} ${data.lastName}`});
-      } catch (error) {
-        console.error("Error fetching instructor:", error);
-      }
-    };
-
-    fetchInstructor();
-  }, [quiz.instructorId]);
-
-  const difficultyColors = {
+  const difficultyColors = useMemo(() => ({
     Beginner: "bg-green-100 text-green-800",
     Intermediate: "bg-yellow-100 text-yellow-800",
     Advanced: "bg-red-100 text-red-800",
-  };
+  } as const), []);
 
-  // Get thumbnail based on category
-  const getRandomThumbnail = (categoryId?: string) => {
-    if (!categoryId || !categoryThumbnails[categoryId]) {
+  const thumbnail = useMemo(() => {
+    if (!quiz.categoryId || !categoryThumbnails[quiz.categoryId]) {
       return "/image_placeholder.webp";
     }
-    
-    const images = categoryThumbnails[categoryId];
+    const images = categoryThumbnails[quiz.categoryId];
     const randomIndex = Math.floor(Math.random() * images.length);
     return images[randomIndex];
-  };
+  }, [quiz.categoryId]);
 
-  const thumbnail = getRandomThumbnail(quiz.categoryId);
-  console.log("Category ID:", quiz.categoryId);
-
-  // Add this function to format the average score
-  const formatScore = (score: number) => {
-    return `${(score * 100).toFixed(1)}%`;
-  };
+  const formattedScore = useMemo(() => 
+    `${(quiz.averageScore * 100).toFixed(1)}%`, 
+    [quiz.averageScore]
+  );
 
   const handleClick = () => {
     if (!isSignedIn) {
@@ -127,58 +98,56 @@ const QuizCard = ({ quiz }: QuizCardProps) => {
     }
   };
 
+  useEffect(() => {
+    if (isSignedIn) {
+      router.prefetch(`/quizzes/${quiz.id}`);
+    }
+  }, [isSignedIn, quiz.id, router]);
+
   return (
-    <div 
-      onClick={handleClick}
-      className="cursor-pointer border rounded-lg p-4 shadow-sm transition-all duration-300 bg-white group hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 hover:bg-gradient-to-br hover:from-white hover:to-blue-50"
-    >
-      <div className="relative overflow-hidden">
+    <div className="border rounded-lg overflow-hidden bg-white shadow-sm">
+      <div className="relative h-48">
         <Image
           src={thumbnail}
           alt={quiz.title}
-          width={500}
-          height={300}
-          className="rounded-t-lg w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+          fill
+          className="object-cover"
+          onError={(e) => {
+            e.currentTarget.src = '/image_placeholder.webp';
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#34495E]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
-      
-      <div className="pt-4">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="font-semibold text-lg mb-2 line-clamp-2">{quiz.title}</h3>
-          <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full min-w-[80px] text-center ${difficultyColors[quiz.difficulty as keyof typeof difficultyColors]}`}>
+
+      <div className="p-4 space-y-3">
+        <div className="flex justify-between items-start">
+          <h3 className="font-semibold text-lg line-clamp-2">{quiz.title}</h3>
+          <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${difficultyColors[quiz.difficulty as keyof typeof difficultyColors]}`}>
             {quiz.difficulty}
           </span>
         </div>
-        
-        <p className="text-sm text-gray-600 mb-4 line-clamp-3">{quiz.description}</p>
 
-        <div className="text-sm text-gray-500 space-y-2">
-          <div className="flex flex-wrap gap-x-2 items-center">
+        <p className="text-sm text-gray-600 line-clamp-3">{quiz.description}</p>
+
+        <div className="text-sm text-gray-500">
+          <div className="flex gap-2 items-center">
             <span>{quiz.questions.length} questions</span>
             <span>•</span>
             <span>{quiz.attempts} participants</span>
             {quiz.attempts > 0 && (
               <>
                 <span>•</span>
-                <span>Avg: {formatScore(quiz.averageScore)}</span>
+                <span>Avg: {formattedScore}</span>
               </>
             )}
           </div>
-
-          {instructor && (
-            <div className="flex gap-2 items-center pt-2">
-              <Image
-                src={instructor.imageUrl || "/avatar_placeholder.jpg"}
-                alt={instructor.fullName || "Instructor photo"}
-                width={28}
-                height={28}
-                className="rounded-full border"
-              />
-              <span className="text-sm">By {instructor.fullName}</span>
-            </div>
-          )}
         </div>
+
+        <Button 
+          onClick={handleClick}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+        >
+          Take Assessment
+        </Button>
       </div>
     </div>
   );

@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { EditReviewModal } from "./EditReviewModal";
 import toast from "react-hot-toast";
 import Image from 'next/image';
+import React from "react";
+import { debounce } from "lodash";
 
 interface Review {
   id: string;
@@ -27,7 +29,7 @@ interface ReviewSectionProps {
   isFree: boolean;
 }
 
-const RatingStars = ({ rating }: { rating: number }) => {
+const RatingStars = React.memo(({ rating }: { rating: number }) => {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 >= 0.5;
 
@@ -46,7 +48,7 @@ const RatingStars = ({ rating }: { rating: number }) => {
       ))}
     </div>
   );
-};
+});
 
 export const ReviewSection = ({ courseId, userId, isFree }: ReviewSectionProps) => {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -58,17 +60,22 @@ export const ReviewSection = ({ courseId, userId, isFree }: ReviewSectionProps) 
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [editingReview, setEditingReview] = useState<Review | null>(null);
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await axios.get(`/api/courses/${courseId}/reviews`);
-        setReviews(response.data);
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      }
-    };
-    fetchReviews();
+  const fetchReviews = React.useCallback(async () => {
+    try {
+      const response = await axios.get(`/api/courses/${courseId}/reviews`, {
+        headers: {
+          'Cache-Control': 'max-age=300' // Cache for 5 minutes
+        }
+      });
+      setReviews(response.data);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
   }, [courseId]);
+
+  React.useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,6 +138,83 @@ export const ReviewSection = ({ courseId, userId, isFree }: ReviewSectionProps) 
     }
   };
 
+  const debouncedSubmit = React.useMemo(() => 
+    debounce(handleSubmit, 500)
+  , []);
+
+  const ReviewItem = React.memo(({ review, isOwner }: { review: Review, isOwner: boolean }) => {
+    return (
+      <div className="border-b pb-6 group relative">
+        <div className="flex items-center gap-2 mb-2">
+          <Image 
+            src={review.userImage} 
+            alt={review.userName}
+            width={50}
+            height={50}
+            className="w-10 h-10 rounded-full"
+          />
+          <div>
+            <div className="font-medium">{review.userName}</div>
+            <RatingStars rating={review.rating} />
+          </div>
+          <span className="text-sm text-gray-500 ml-2">
+            {formatDistanceToNow(new Date(review.createdAt))} ago
+          </span>
+        </div>
+        <p className="text-gray-700">{review.text}</p>
+        {isOwner && (
+          <div className="absolute top-0 right-0 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={() => {
+                setEditingId(review.id);
+                setEditText(review.text);
+                setEditRating(review.rating);
+              }}
+              className="text-gray-500 hover:text-blue-600"
+            >
+              <Pencil className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => handleDelete(review.id)}
+              className="text-gray-500 hover:text-red-600"
+            >
+              <Trash className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  });
+
+  const sortedReviews = React.useMemo(() => 
+    reviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  , [reviews]);
+
+  const PurchaseModal = React.memo(() => (
+    <Dialog open={showPurchaseModal} onOpenChange={setShowPurchaseModal}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {isFree ? "Enroll in Course" : "Purchase Required"}
+          </DialogTitle>
+        </DialogHeader>
+        <p>
+          {isFree 
+            ? "Please enroll in this free course to leave reviews"
+            : "You need to purchase this course to leave reviews"}
+        </p>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setShowPurchaseModal(false)}>
+            Cancel
+          </Button>
+          <Button onClick={handlePurchase}>
+            {isFree ? "Enroll Now" : "Purchase Course"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  ));
+
   return (
     <div className="mt-8 border-t pt-6">
       <h3 className="text-lg font-semibold mb-4">Reviews ({reviews.length})</h3>
@@ -163,98 +247,12 @@ export const ReviewSection = ({ courseId, userId, isFree }: ReviewSectionProps) 
       </form>
 
       <div className="space-y-6">
-        {reviews.map((review) => (
-          <div key={review.id} className="border-b pb-6 group relative">
-            <div className="flex items-center gap-2 mb-2">
-              <Image 
-                src={review.userImage} 
-                alt={review.userName}
-                width={50}
-                height={50}
-                className="w-10 h-10 rounded-full"
-              />
-              <div>
-                <div className="font-medium">{review.userName}</div>
-                <RatingStars rating={review.rating} />
-              </div>
-              <span className="text-sm text-gray-500 ml-2">
-                {formatDistanceToNow(new Date(review.createdAt))} ago
-              </span>
-            </div>
-            {editingId === review.id ? (
-              <div className="space-y-2">
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((rating) => (
-                    <button
-                      key={rating}
-                      type="button"
-                      onClick={() => setEditRating(rating)}
-                      className={`text-2xl ${editRating >= rating ? 'text-yellow-500' : 'text-gray-300'}`}
-                    >
-                      ★
-                    </button>
-                  ))}
-                </div>
-                <Input
-                  value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
-                />
-                <div className="flex gap-2">
-                  <Button onClick={() => handleEditSave(review.id)}>Save</Button>
-                  <Button variant="outline" onClick={() => setEditingId(null)}>Cancel</Button>
-                </div>
-              </div>
-            ) : (
-              <p className="text-gray-700">{review.text}</p>
-            )}
-            
-            {currentUserId === review.userId && (
-              <div className="absolute top-0 right-0 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  onClick={() => {
-                    setEditingId(review.id);
-                    setEditText(review.text);
-                    setEditRating(review.rating);
-                  }}
-                  className="text-gray-500 hover:text-blue-600"
-                >
-                  <Pencil className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDelete(review.id)}
-                  className="text-gray-500 hover:text-red-600"
-                >
-                  <Trash className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-          </div>
+        {sortedReviews.map((review) => (
+          <ReviewItem key={review.id} review={review} isOwner={currentUserId === review.userId} />
         ))}
       </div>
 
-      {/* Purchase Modal (similar to your CommentSection) */}
-      <Dialog open={showPurchaseModal} onOpenChange={setShowPurchaseModal}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {isFree ? "Enroll in Course" : "Purchase Required"}
-            </DialogTitle>
-          </DialogHeader>
-          <p>
-            {isFree 
-              ? "Please enroll in this free course to leave reviews"
-              : "You need to purchase this course to leave reviews"}
-          </p>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowPurchaseModal(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handlePurchase}>
-              {isFree ? "Enroll Now" : "Purchase Course"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <PurchaseModal />
     </div>
   );
 }; 

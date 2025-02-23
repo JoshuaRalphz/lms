@@ -8,24 +8,19 @@ import { UserGreeting } from "@/components/layout/UserGreeting";
 import { EmptyState } from "@/components/learning/EmptyState";
 import { LearningStatsWrapper } from "@/components/learning/LearningStatsWrapper";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import dynamic from 'next/dynamic';
+
 
 // Lazy load components
-const RecommendedSection = lazy(() => import("@/components/learning/RecommendedSection"));
+const RecommendedSection = dynamic(
+  () => import('@/components/learning/RecommendedSection'),
+  { 
+    loading: () => <LoadingSpinner />,
+    ssr: false 
+  }
+);
 const CourseCard = lazy(() => import("@/components/courses/CourseCard"));
 const QuizCard = lazy(() => import("@/components/quiz/QuizCard"));
-
-interface QuizAttempt {
-  id: string;
-  quiz: {
-    id: string;
-    title: string;
-    description: string;
-    questions: { id: string }[];
-    category?: { id: string };
-    attempts: number;
-  };
-  score: number;
-}
 
 const getRecommendedContent = async (userId: string) => {
   const userInterests = await db.userInterest.findMany({
@@ -115,13 +110,19 @@ const LearningPage = async () => {
       db.quizAttempt.findMany({
         where: { userId },
         select: {
+          id: true,
           score: true,
+          createdAt: true,
           quiz: {
             select: {
               id: true,
-              title: true
+              title: true,
+              questions: { select: { id: true } }
             }
           }
+        },
+        orderBy: {
+          createdAt: 'desc'
         }
       }),
       getRecommendedContent(userId)
@@ -159,19 +160,24 @@ const LearningPage = async () => {
               emptyMessage="No recommended courses found based on your interests."
               buttonText="Explore More"
               href="/vid"
-              renderItem={(course) => (
+              renderItem={(item) => (
                 <CourseCard 
-                  key={course.id} 
+                  key={item.id}
                   course={{
-                    ...course,
-                    title: course.title,
-                    instructorId: course.instructorId,
-                    categoryId: course.categoryId,
-                    Review: course.Review?.map((r: { rating: number }) => ({ rating: r.rating })) || [],
-                    purchases: course.purchases || [],
-                    category: course.category || null,
-                    price: course.price || 0
-                  }} 
+                    ...item,
+                    id: item.id,
+                    title: item.title,
+                    imageUrl: item.imageUrl || "/course_placeholder.jpg",
+                    imagePriority: recommendedContent.courses.indexOf(item) < 3,
+                    imageLoading: recommendedContent.courses.indexOf(item) > 2 ? "lazy" : "eager",
+                    Review: item.Review || [],
+                    purchases: item.purchases || [],
+                    courseAnalytics: item.courseAnalytics || { views: 0 },
+                    category: item.category || { name: 'Uncategorized' },
+                    level: item.level || { name: 'Beginner' },
+                    price: item.price || 0,
+                    isFree: item.isFree || false
+                  }}
                 />
               )}
             />
@@ -208,26 +214,29 @@ const LearningPage = async () => {
               emptyMessage="You haven't enrolled in any courses yet."
               buttonText="Explore Courses"
               href="/vid"
-              renderItem={(course) => (
+              renderItem={(item) => (
                 <CourseCard 
-                  key={course.id} 
+                  key={item.id}
                   course={{
-                    id: course.id,
-                    title: course.title,
-                    description: course.description || "",
-                    imageUrl: course.imageUrl || "",
-                    instructorId: course.instructorId,
-                    categoryId: course.categoryId,
-                    price: course.price || 0,
-                    category: course.category,
-                    Review: course.Review || [],
-                    purchases: course.purchases || [],
-                    sections: course.sections
+                    ...item,
+                    id: item.id,
+                    title: item.title,
+                    imageUrl: item.imageUrl || "/course_placeholder.jpg",
+                    imagePriority: purchasedCourses.indexOf(item) < 3,
+                    imageLoading: purchasedCourses.indexOf(item) > 2 ? "lazy" : "eager",
+                    Review: item.Review || [],
+                    purchases: item.purchases || [],
+                    courseAnalytics: item.courseAnalytics || { views: 0 },
+                    category: item.category || { name: 'Uncategorized' },
+                    level: item.level || { name: 'Beginner' },
+                    price: item.price || 0,
+                    isFree: item.isFree || false
                   }}
-                  progressPercentage={getProgress(course.sections, userId)}
                 />
               )}
             />
+
+
           </Suspense>
         </div>
       </div>

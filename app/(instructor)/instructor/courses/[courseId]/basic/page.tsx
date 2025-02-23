@@ -140,7 +140,7 @@ const CourseBasics = async ({ params }: { params: { courseId: string } }) => {
             <div>
               <div className="flex items-center gap-x-2">
                 <IconBadge icon={CircleDollarSign} />
-                <h2 className="text-xl">Sell your course</h2>
+                <h2 className="text-xl">Sell your webinar</h2>
               </div>
               <PriceForm 
                 initialData={{ ...course, price: course.price ?? 0 }} 

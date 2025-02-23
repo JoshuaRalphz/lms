@@ -58,7 +58,7 @@ const CreateCourseForm = ({ categories }: CreateCourseFormProps) => {
     try {
       const response = await axios.post("/api/courses", values);
       router.push(`/instructor/courses/${response.data.id}/basic`);
-      toast.success("New Course Created");
+      toast.success("New Webinar Created");
     } catch (err) {
       console.log("Failed to create new course", err);
       toast.error("Something went wrong!");
@@ -68,7 +68,7 @@ const CreateCourseForm = ({ categories }: CreateCourseFormProps) => {
   return (
     <div className="p-10">
       <h1 className="text-xl font-bold">
-        Let give some basics for your course
+        Let give some basics for your webinar
       </h1>
       <p className="text-sm mt-3">
         It is ok if you cannot think of a good title or correct category now.

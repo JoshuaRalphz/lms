@@ -77,7 +77,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
                 <div className="flex items-center gap-2">
                     <span className="text-xl font-bold">Pricing</span>
                     <span className="text-sm text-emerald-600 bg-emerald-100/50 px-2 py-1 rounded-full">
-                        {initialData.isFree ? "FREE COURSE" : "PREMIUM COURSE"}
+                        {initialData.isFree ? "FREE WEBINAR" : "PREMIUM WEBINAR"}
                     </span>
                 </div>
                 <Button onClick={toggleEdit} variant="ghost">
@@ -141,9 +141,9 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
                                 render={({ field }) => (
                                     <FormItem className="flex flex-row items-center justify-between rounded-xl p-4 border">
                                         <div>
-                                            <FormLabel className="text-[#34495E] font-medium">Free Course</FormLabel>
+                                            <FormLabel className="text-[#34495E] font-medium">Free Webinar</FormLabel>
                                             <FormDescription className="text-slate-500">
-                                                Enable to offer this course for free
+                                                Enable to offer this webinar for free
                                             </FormDescription>
                                         </div>
                                         <FormControl>

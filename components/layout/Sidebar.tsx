@@ -14,16 +14,16 @@ const Sidebar = () => {
   }
 
   const sidebarRoutes = [
-    { icon: <MonitorPlay />, label: "Course Creation", 
+    { icon: <MonitorPlay />, label: "Webinar Creation", 
       path: "/instructor/courses" },
       {
         icon: <QuizIcon />,
-        label: "Quiz Builder",
+        label: "Assessments Builder",
         path: "/instructor/quiz",
       },
     {
       icon: <BarChart4 />,
-      label: "Statistics",
+      label: "Analytics",
       path: "/instructor/analytics",
     },
 

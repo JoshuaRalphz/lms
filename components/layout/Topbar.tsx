@@ -86,7 +86,7 @@ const Topbar = () => {
               <Link href="/learning" onClick={closeMobileMenu}>
                 <Button variant="ghost" className="w-full flex items-center gap-2">
                   <LayoutDashboard className="h-4 w-4" />
-                  Student View
+                  Participants View
                 </Button>
               </Link>
             ) : (

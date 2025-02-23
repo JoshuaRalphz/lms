@@ -70,8 +70,8 @@ export const CategoryForm = ({
         <div className="mt-6 border bg-white rounded-lg shadow-sm">
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-t-lg">
                 <div>
-                    <h3 className="text-lg font-semibold">Course Category</h3>
-                    <p className="text-sm text-muted-foreground">Manage course category</p>
+                    <h3 className="text-lg font-semibold">Webinar Category</h3>
+                    <p className="text-sm text-muted-foreground">Manage webinar category</p>
                 </div>
                 <Button 
                     onClick={toggleEdit} 

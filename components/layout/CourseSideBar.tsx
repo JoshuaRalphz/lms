@@ -32,7 +32,7 @@ const CourseSideBar = ({
           pathname === `/courses/${course.id}/overview` ? "bg-[#A9B5DF] text-[#34495E]" : ""
         }`}
       >
-        OVERVIEW
+        MAIN
       </Link>
       {course.sections.map((section) => (
         <Link

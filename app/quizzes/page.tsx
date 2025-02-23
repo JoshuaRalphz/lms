@@ -2,7 +2,6 @@ import { db } from "@/lib/db";
 import QuizCard from "@/components/quiz/QuizCard";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import  Topbar  from "@/components/layout/Topbar";
 import { cn } from "@/lib/utils";
 
@@ -65,13 +64,13 @@ const QuizzesPage = async ({ searchParams }: { searchParams: { difficulty?: stri
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 max-w-4xl mx-auto px-2">
             <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
               <h3 className="text-xl md:text-2xl font-bold text-white mb-1">{quizzes.length}</h3>
-              <p className="text-xs md:text-sm text-gray-200">Quizzes</p>
+              <p className="text-xs md:text-sm text-gray-200">Assessments</p>
             </div>
             <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
               <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
                 {quizzes.reduce((sum, quiz) => sum + quiz.attempts, 0)}
               </h3>
-              <p className="text-xs md:text-sm text-gray-200">Attempts</p>
+              <p className="text-xs md:text-sm text-gray-200">Participated</p>
             </div>
             <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
               <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
@@ -83,7 +82,7 @@ const QuizzesPage = async ({ searchParams }: { searchParams: { difficulty?: stri
               <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
                 {mostParticipated.length > 0 ? mostParticipated[0].attempts : '0'}
               </h3>
-              <p className="text-xs md:text-sm text-gray-200">Most Attempts</p>
+              <p className="text-xs md:text-sm text-gray-200">Most Participated</p>
             </div>
           </div>
         </div>

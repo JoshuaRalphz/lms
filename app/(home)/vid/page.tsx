@@ -182,7 +182,7 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
 
             {/* Free Courses Section */}
             <div className="my-6 md:my-10 px-4 md:px-0">
-              <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center">Free Courses</h2>
+              <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center">Free Webinar&apos;s</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 {freeCourses.map((course) => (
                   <CourseCard 

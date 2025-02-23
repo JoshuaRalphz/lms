@@ -94,7 +94,7 @@ export default function CourseCard({ course }: CourseCardProps) {
 
   const imageProps = useMemo(() => ({
     src: course?.imageUrl || "/course_placeholder.jpg",
-    alt: course?.title || "Course",
+    alt: course?.title ? `Course image for ${course.title}` : "Course image",
     fill: true,
     priority: course?.imagePriority,
     loading: course?.imageLoading || "lazy",

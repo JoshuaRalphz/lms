@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Head from 'next/head';
+import { Viewport } from 'next'
 
 import "./globals.css";
 import ToasterProvider from "@/components/providers/ToasterProvider";
@@ -18,12 +19,15 @@ const inter = Inter({
   variable: '--font-inter'
 });
 
+export const viewport: Viewport = {
+  themeColor: '#2D336B',
+}
+
 export const metadata: Metadata = {
   title: "DevPath - E Learning",
   description: "Empowering minds, shaping future",
   manifest: "/manifest.json",
-  themeColor: "#2D336B",
-};
+}
 
 export default function RootLayout({
   children,

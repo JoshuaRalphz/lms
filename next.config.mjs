@@ -32,14 +32,6 @@ const nextConfig = {
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin'
-          },
-          {
-            key: 'Link',
-            value: '</_next/static/css/styles.css>; rel=preload; as=style'
-          },
-          {
-            key: 'Link',
-            value: '</_next/static/chunks/main.js>; rel=preload; as=script'
           }
         ],
       },

@@ -85,7 +85,7 @@ export const CourseCompletion = ({ courseId }: { courseId: string }) => {
       <Dialog open={showSimilarCourses} onOpenChange={setShowSimilarCourses}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Congratulations! Here are some similar courses you might like</DialogTitle>
+            <DialogTitle>Congratulations! Here are some similar webinar you might like</DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {similarCourses.map((course) => (

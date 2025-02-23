@@ -54,7 +54,11 @@ const nextConfig = {
       }
     ];
   },
-  swcMinify: true
+  swcMinify: true,
+  experimental: {
+    optimizeFonts: true,
+    optimizeCss: true
+  }
 };
 
 const withPWA = nextPWA({
@@ -75,7 +79,13 @@ const withPWA = nextPWA({
       },
     },
   ],
-  buildExcludes: [/middleware-manifest\.json$/],
+  buildExcludes: [
+    /middleware-manifest\.json$/,
+    /_buildManifest\.js$/,
+    /_middlewareManifest\.js$/,
+    /_ssgManifest\.js$/,
+    /_app-build-manifest\.json$/,
+  ],
   sw: 'sw.js',
 });
 

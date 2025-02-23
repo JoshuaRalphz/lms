@@ -37,7 +37,7 @@ export const StatisticsSection = ({
           <p className="text-3xl font-bold mt-2 text-blue-600">{purchasedCoursesCount}</p>
         </Card>
         <Card className="p-6 bg-gradient-to-r from-green-50 to-teal-50">
-          <h3 className="text-lg font-semibold text-gray-600">Quizzes Taken</h3>
+          <h3 className="text-lg font-semibold text-gray-600">Assesments Taken</h3>
           <p className="text-3xl font-bold mt-2 text-green-600">{takenQuizzesCount}</p>
         </Card>
         <Card className="p-6 bg-gradient-to-r from-purple-50 to-pink-50">
@@ -45,7 +45,7 @@ export const StatisticsSection = ({
           <p className="text-3xl font-bold mt-2 text-purple-600">{completionRate}</p>
         </Card>
         <Card className="p-6 bg-gradient-to-r from-orange-50 to-amber-50">
-          <h3 className="text-lg font-semibold text-gray-600">Quiz Avg Score</h3>
+          <h3 className="text-lg font-semibold text-gray-600">Assesments Avg Score</h3>
           <p className="text-3xl font-bold mt-2 text-orange-600">{quizAverageScore}</p>
         </Card>
       </div>

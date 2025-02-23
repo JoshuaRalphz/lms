@@ -53,7 +53,6 @@ const QuizzesPage = async ({ searchParams }: { searchParams: { difficulty?: stri
           <Topbar />
     <div className="md:mt-5 md:px-10 xl:px-16 pb-16 bg-gradient-to-b from-white to-gray-100">
       <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 min-h-[40vh] md:min-h-[50vh] flex items-center">
-        <div className="absolute inset-0 bg-[url('/hero-pattern.svg')] opacity-10"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-4 px-2">
             {selectedCategory ? `${selectedCategory.name} Quizzes` : "Test Your Knowledge"}

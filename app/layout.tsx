@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Head from 'next/head';
 
 import "./globals.css";
 import ToasterProvider from "@/components/providers/ToasterProvider";
@@ -31,26 +32,27 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="preload" href="/hero-pattern.svg" as="image" />
+        <link rel="preload" href="/image_placeholder.webp" as="image" />
+        <link rel="preload" href="/fonts/Inter.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/course_placeholder.jpg" as="image" />
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            .hero-bg {
+              background: linear-gradient(to right, #3b82f6, #9333ea);
+            }
+            .text-gradient {
+              background: linear-gradient(to right, #3b82f6, #9333ea);
+              -webkit-background-clip: text;
+              background-clip: text;
+              color: transparent;
+            }
+          `
+        }} />
+      </Head>
       <html lang="en">
-        <head>
-          <link rel="icon" href="/favicon.ico" />
-          <link rel="preload" href="/hero-pattern.svg" as="image" />
-          <link rel="preload" href="/image_placeholder.webp" as="image" />
-          <link rel="preload" href="/fonts/Inter.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-          <style dangerouslySetInnerHTML={{
-            __html: `
-              .hero-bg {
-                background: linear-gradient(to right, #3b82f6, #9333ea);
-              }
-              .text-gradient {
-                background: linear-gradient(to right, #3b82f6, #9333ea);
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-              }
-            `
-          }} />
-        </head>
         <body className={inter.className}>
           <ToasterProvider />
           <ConfettiProvider>

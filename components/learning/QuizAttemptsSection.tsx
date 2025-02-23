@@ -28,10 +28,22 @@ export default function QuizAttemptsSection({
   buttonText,
   href
 }: QuizAttemptsSectionProps) {
+  // Get only the latest attempt for each quiz
+  const latestAttempts = attempts.reduce((acc, attempt) => {
+    const existing = acc.find(a => a.quiz.id === attempt.quiz.id);
+    if (!existing || new Date(attempt.createdAt) > new Date(existing.createdAt)) {
+      return [
+        ...acc.filter(a => a.quiz.id !== attempt.quiz.id),
+        attempt
+      ];
+    }
+    return acc;
+  }, [] as QuizAttempt[]);
+
   return (
     <section>
       <div className="flex flex-col sm:flex-row justify-between items-center mb-3 sm:mb-4 gap-2">
-        <h2 className="text-lg sm:text-xl font-semibold">Quiz Attempts</h2>
+        <h2 className="text-lg sm:text-xl font-semibold">Assessments Takes</h2>
         <Link href={href} className="w-full sm:w-auto">
           <Button variant="outline" className="w-full sm:w-auto">
             {buttonText}
@@ -39,9 +51,9 @@ export default function QuizAttemptsSection({
         </Link>
       </div>
       
-      {attempts.length > 0 ? (
+      {latestAttempts.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {attempts.map((attempt) => {
+          {latestAttempts.map((attempt) => {
             const score = Math.round(attempt.score * attempt.quiz.questions.length);
             const isPassing = score >= (attempt.quiz.questions.length * 0.7);
 
@@ -68,7 +80,7 @@ export default function QuizAttemptsSection({
                   </p>
                   <Link href={`/quizzes/${attempt.quiz.id}`}>
                     <Button variant="outline" className="w-full">
-                      Retake Quiz
+                      Retake 
                     </Button>
                   </Link>
                 </div>

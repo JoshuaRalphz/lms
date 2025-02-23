@@ -12,6 +12,7 @@ export const PWAInstallButton = () => {
       e.preventDefault();
       setDeferredPrompt(e);
       setIsVisible(true);
+      console.log('beforeinstallprompt event triggered');
     };
 
     // Check if the browser supports the beforeinstallprompt event

@@ -1,73 +1,74 @@
 import { db } from "@/lib/db";
 import CourseCard from "@/components/courses/CourseCard";
-
-
 import { CourseCategories } from "@/components/courses/CourseCategories";
+
+// Utility function to calculate average rating
+const calculateAverageRating = (reviews: { rating: number }[]) => {
+  return reviews.length > 0 
+    ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+    : 0;
+};
 
 const CoursesPage = async ({ searchParams }: { searchParams: { category?: string } }) => {
   const category = searchParams.category;
 
-
-  const courses = await db.course.findMany({
-    where: {
-      isPublished: true,
-      categoryId: category || undefined
-    },
-    include: {
-      sections: {
-        where: { isPublished: true },
-        include: {
-          progress: true
+  // Fetch data in parallel
+  const [courses, categories] = await Promise.all([
+    db.course.findMany({
+      where: {
+        isPublished: true,
+        categoryId: category || undefined
+      },
+      include: {
+        sections: {
+          where: { isPublished: true },
+          include: { progress: true }
+        },
+        Review: true,
+        purchases: true,
+        category: true,
+        level: true,
+        courseAnalytics: {
+          select: { views: true }
         }
       },
-      Review: true,
-      purchases: true,
-      category: true,
-      level: true,
-      courseAnalytics: {
-        select: {
-          views: true
-        }
-      }
-    },
-    orderBy: {
-      createdAt: 'desc'
-    }
-  });
+      orderBy: { createdAt: 'desc' }
+    }),
+    db.category.findMany({
+      orderBy: { name: "asc" }
+    })
+  ]);
 
-  const categories = await db.category.findMany({
-    orderBy: {
-      name: "asc"
-    }
-  });
+  // Calculate statistics once
+  const courseStats = {
+    totalCourses: courses.length,
+    totalEnrollments: courses.reduce((sum, course) => sum + course.purchases.length, 0),
+    totalLessons: courses.reduce((sum, course) => sum + course.sections.length, 0),
+    totalViews: courses.reduce((sum, course) => sum + (course.courseAnalytics?.views || 0), 0)
+  };
 
-  // Get most popular courses
-  const mostPopular = [...courses]
-    .map(course => ({
-      ...course,
-      averageRating: course.Review.length > 0 
-        ? course.Review.reduce((sum, review) => sum + review.rating, 0) / course.Review.length
-        : 0,
-      enrollmentCount: course.purchases.length
-    }))
+  // Process courses once
+  const processedCourses = courses.map(course => ({
+    ...course,
+    averageRating: calculateAverageRating(course.Review),
+    enrollmentCount: course.purchases.length
+  }));
+
+  // Get filtered lists
+  const mostPopular = [...processedCourses]
     .filter(course => course.enrollmentCount > 0)
     .sort((a, b) => b.enrollmentCount - a.enrollmentCount)
     .slice(0, 6);
 
-  // Get top rated courses
-  const topRated = [...courses].map(course => ({
-    ...course,
-    averageRating: course.Review.length > 0 
-      ? course.Review.reduce((sum, review) => sum + review.rating, 0) / course.Review.length
-      : 0
-  })).filter(course => course.averageRating > 0)
+  const topRated = [...processedCourses]
+    .filter(course => course.averageRating > 0)
     .sort((a, b) => b.averageRating - a.averageRating)
     .slice(0, 6);
 
-  const freeCourses = courses.filter(course => course.price === 0 || course.isFree);
-  const recentlyUploaded = [...courses].sort((a, b) => 
-    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  ).slice(0, 6);
+  const freeCourses = processedCourses.filter(course => course.price === 0 || course.isFree);
+  const recentlyUploaded = [...processedCourses]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 6);
 
   const selectedCategory = category ? categories.find(c => c.id === category) : null;
 
@@ -89,24 +90,24 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 max-w-4xl mx-auto px-2 mb-10">
               <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
-                <h3 className="text-xl md:text-2xl font-bold text-white mb-1">{courses.length}</h3>
+                <h3 className="text-xl md:text-2xl font-bold text-white mb-1">{courseStats.totalCourses}</h3>
                 <p className="text-xs md:text-sm text-gray-200">Courses</p>
               </div>
               <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
-                  {courses.reduce((sum, course) => sum + course.purchases.length, 0)}
+                  {courseStats.totalEnrollments}
                 </h3>
                 <p className="text-xs md:text-sm text-gray-200">Enrollments</p>
               </div>
               <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
-                  {courses.reduce((sum, course) => sum + course.sections.length, 0)}
+                  {courseStats.totalLessons}
                 </h3>
                 <p className="text-xs md:text-sm text-gray-200">Lessons</p>
               </div>
               <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
-                  {courses.reduce((sum, course) => sum + (course.courseAnalytics?.views || 0), 0).toLocaleString()}
+                  {courseStats.totalViews.toLocaleString()}
                 </h3>
                 <p className="text-xs md:text-sm text-gray-200">Views</p>
               </div>

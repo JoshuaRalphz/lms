@@ -12,7 +12,9 @@ import { PWALifecycle } from "@/components/PWALifecycle";
 const inter = Inter({ 
   subsets: ['latin'],
   display: 'swap',
-  preload: true
+  preload: true,
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter'
 });
 
 export const metadata: Metadata = {
@@ -32,6 +34,22 @@ export default function RootLayout({
       <html lang="en">
         <head>
           <link rel="icon" href="/favicon.ico" />
+          <link rel="preload" href="/hero-pattern.svg" as="image" />
+          <link rel="preload" href="/image_placeholder.webp" as="image" />
+          <link rel="preload" href="/fonts/Inter.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              .hero-bg {
+                background: linear-gradient(to right, #3b82f6, #9333ea);
+              }
+              .text-gradient {
+                background: linear-gradient(to right, #3b82f6, #9333ea);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+              }
+            `
+          }} />
         </head>
         <body className={inter.className}>
           <ToasterProvider />

@@ -87,32 +87,42 @@ const LearningPage = async () => {
 
   try {
     const [userInterests, purchasedCourses, takenQuizzes, recommendedContent] = await Promise.all([
-      db.userInterest.findMany({ where: { userId } }),
+      db.userInterest.findMany({
+        where: { userId },
+        select: { categoryId: true }
+      }),
       db.course.findMany({
         where: {
           isPublished: true,
           purchases: { some: { customerId: userId } }
         },
-        include: {
-          category: true,
+        select: {
+          id: true,
+          title: true,
+          imageUrl: true,
+          category: { select: { name: true } },
           sections: {
             where: { isPublished: true },
-            include: { progress: { where: { studentId: userId } } }
-          },
-          Review: true,
-          purchases: { select: { id: true } },
-          level: true
+            select: {
+              progress: {
+                where: { studentId: userId },
+                select: { isCompleted: true }
+              }
+            }
+          }
         }
       }),
       db.quizAttempt.findMany({
         where: { userId },
-        include: {
+        select: {
+          score: true,
           quiz: {
-            include: { questions: true, category: true }
+            select: {
+              id: true,
+              title: true
+            }
           }
-        },
-        orderBy: { createdAt: "desc" },
-        distinct: ['quizId']
+        }
       }),
       getRecommendedContent(userId)
     ]);
@@ -215,31 +225,6 @@ const LearningPage = async () => {
                     sections: course.sections
                   }}
                   progressPercentage={getProgress(course.sections, userId)}
-                />
-              )}
-            />
-
-            {/* Taken Quizzes */}
-            <RecommendedSection 
-              title="My Quiz Attempts"
-              items={takenQuizzes}
-              emptyMessage="You haven't taken any quizzes yet."
-              buttonText="Explore Quizzes"
-              href="/quizzes"
-              renderItem={(attempt) => (
-                <QuizCard 
-                  key={attempt.id}
-                  quiz={{
-                    id: attempt.quiz.id,
-                    title: attempt.quiz.title,
-                    description: attempt.quiz.description || "",
-                    instructorId: attempt.quiz.instructorId,
-                    difficulty: attempt.quiz.difficulty,
-                    categoryId: attempt.quiz.category?.id,
-                    questions: attempt.quiz.questions,
-                    attempts: attempt.quiz.attempts,
-                    averageScore: attempt.score
-                  }}
                 />
               )}
             />

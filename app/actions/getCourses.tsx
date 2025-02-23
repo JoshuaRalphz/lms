@@ -3,7 +3,6 @@ import { Course } from "@prisma/client"
 
 interface CourseWithReviews extends Course {
   category: any;
-  level: any;
   sections: any[];
   Review: { rating: number }[];
   purchases: { id: string }[];

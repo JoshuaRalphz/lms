@@ -2,6 +2,8 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { InterestPage } from "@/components/interest/Interest";
+import { Suspense } from "react";
+import {Loading} from "@/components/custom/Loading";
 
 export default async function Page() {
   const { userId } = await auth();
@@ -10,18 +12,23 @@ export default async function Page() {
     return redirect("/sign-in");
   }
 
-  const userInterests = await db.userInterest.findMany({
-    where: { userId },
-    include: { category: true }
-  });
+  const [userInterests, categories] = await Promise.all([
+    db.userInterest.findMany({
+      where: { userId },
+      include: { category: true }
+    }),
+    db.category.findMany({
+      orderBy: { name: "asc" }
+    })
+  ]);
 
-  const categories = await db.category.findMany({
-    orderBy: { name: "asc" }
-  });
-
-  return <InterestPage 
-    categories={categories} 
-    userInterests={userInterests}
-    isUpdateMode={true}
-  />;
+  return (
+    <Suspense fallback={<Loading className="min-h-screen" />}>
+      <InterestPage 
+        categories={categories} 
+        userInterests={userInterests}
+        isUpdateMode={true}
+      />
+    </Suspense>
+  );
 }

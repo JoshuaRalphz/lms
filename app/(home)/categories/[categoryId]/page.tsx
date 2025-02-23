@@ -27,13 +27,11 @@ const CoursesByCategory = async ({
             course={{
               ...course,
               sections: course.sections || [],
-              level: course.level || null,
               category: course.category || { name: 'Uncategorized' },
               Review: course.Review || [],
               purchases: course.purchases || [],
               views: course.views || 0,
               instructorId: course.instructorId,
-              levelId: course.levelId || null,
               categoryId: course.categoryId,
               price: course.price || null,
               imageUrl: course.imageUrl || null,

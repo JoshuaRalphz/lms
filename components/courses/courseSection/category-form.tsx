@@ -25,7 +25,6 @@ import { Label } from "@/components/ui/label";
 // Form Validation Schema
 const formSchema = z.object({
     categoryId: z.string().min(1, "Category is required"),
-    levelId: z.string().min(1, "Level is required"),
 });
 
 interface CategoryFormProps {
@@ -35,14 +34,12 @@ interface CategoryFormProps {
         label: string;
         value: string;
     }[];
-    levels: { label: string; value: string }[];
 }
 
 export const CategoryForm = ({
     initialData,
     courseId,
     categories,
-    levels,
 }: CategoryFormProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const router = useRouter();
@@ -53,7 +50,6 @@ export const CategoryForm = ({
         resolver: zodResolver(formSchema),
         defaultValues: {
             categoryId: initialData?.categoryId || "",
-            levelId: initialData?.levelId || "",
         },
     });
 
@@ -74,23 +70,23 @@ export const CategoryForm = ({
         <div className="mt-6 border bg-white rounded-lg shadow-sm">
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-t-lg">
                 <div>
-                    <h3 className="text-lg font-semibold">Course Classification</h3>
-                    <p className="text-sm text-muted-foreground">Manage category and difficulty level</p>
+                    <h3 className="text-lg font-semibold">Course Category</h3>
+                    <p className="text-sm text-muted-foreground">Manage course category</p>
                 </div>
                 <Button 
-  onClick={toggleEdit} 
-  variant="ghost" 
-  className="gap-2 text-black hover:bg-[#A9B5DF]"
->
-  {isEditing ? (
-    <>Cancel Changes</>
-  ) : (
-    <>
-      <Pencil className="h-4 w-4" />
-      <span>Edit Classification</span>
-    </>
-  )}
-</Button>
+                    onClick={toggleEdit} 
+                    variant="ghost" 
+                    className="gap-2 text-black hover:bg-[#A9B5DF]"
+                >
+                    {isEditing ? (
+                        <>Cancel Changes</>
+                    ) : (
+                        <>
+                            <Pencil className="h-4 w-4" />
+                            <span>Edit Category</span>
+                        </>
+                    )}
+                </Button>
             </div>
 
             {!isEditing && (
@@ -105,15 +101,6 @@ export const CategoryForm = ({
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 bg-purple-50 px-4 py-2 rounded-lg">
-                            <BarChart className="h-5 w-5 text-purple-600" />
-                            <div>
-                                <p className="text-sm font-medium text-muted-foreground">Level</p>
-                                <p className="font-medium">
-                                    {levels.find(l => l.value === initialData.levelId)?.label || "Not set"}
-                                </p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             )}
@@ -122,7 +109,7 @@ export const CategoryForm = ({
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 space-y-6">
                         <div className="space-y-4">
-                            <div className="grid gap-6 md:grid-cols-2">
+                            <div className="grid gap-6">
                                 <div className="space-y-2">
                                     <Label className="text-sm font-medium flex items-center gap-1">
                                         Category
@@ -136,29 +123,6 @@ export const CategoryForm = ({
                                                 <FormControl>
                                                     <ComboBox
                                                         options={categories}
-                                                        {...field}
-                                                        className="w-full [&>button]:border [&>button]:shadow-sm"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage className="text-xs" />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                
-                                <div className="space-y-2">
-                                    <Label className="text-sm font-medium flex items-center gap-1">
-                                        Difficulty Level
-                                        <span className="text-red-500">*</span>
-                                    </Label>
-                                    <FormField
-                                        control={form.control}
-                                        name="levelId"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormControl>
-                                                    <ComboBox
-                                                        options={levels}
                                                         {...field}
                                                         className="w-full [&>button]:border [&>button]:shadow-sm"
                                                     />

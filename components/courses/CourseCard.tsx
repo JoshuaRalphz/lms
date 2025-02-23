@@ -34,7 +34,6 @@ interface CourseCardProps {
     }[];
     Review: { rating: number }[];
     purchases: { id: string }[];
-    level: { name: string } | null;
     category: { name: string };
     price: number | null;
     views?: number;
@@ -160,8 +159,6 @@ const CourseCard = ({ course, progressPercentage }: CourseCardProps) => {
           </span>
           <span>• {course.purchases.length} enrolled</span>
           <span>• {course.views?.toLocaleString() || 0} views</span>
-          <span>•</span>
-          <span>{course.level?.name}</span>
         </div>
 
         <p className="text-sm font-bold">

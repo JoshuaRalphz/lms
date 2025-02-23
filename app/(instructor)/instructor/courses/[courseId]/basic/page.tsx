@@ -51,13 +51,11 @@ const CourseBasics = async ({ params }: { params: { courseId: string } }) => {
     },
   });
 
-  const levels = await db.level.findMany();
 
   const requiredFields = [
     course.title,
     course.description,
     course.categoryId,
-    course.levelId,
     course.imageUrl,
     course.isFree || course.price,
     course.sections.some((section) => section.isPublished),
@@ -110,10 +108,6 @@ const CourseBasics = async ({ params }: { params: { courseId: string } }) => {
           label: category.name,
           value: category.id,
         }))}
-        levels={levels.map((level) => ({
-          label: level.name,
-          value: level.id,
-        }))}
         isCompleted={isCompleted}
       />
 
@@ -140,7 +134,6 @@ const CourseBasics = async ({ params }: { params: { courseId: string } }) => {
             initialData={course}
             courseId={course.id}
             categories={formatCategories(categories)}
-            levels={formatLevels(levels)}
           />
             </div>
 

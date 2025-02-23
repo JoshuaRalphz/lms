@@ -6,8 +6,9 @@ import { Category } from "@prisma/client"
 import { cn } from "@/lib/utils"
 
 interface InterestSelectionProps {
-  categories: Category[]
-  userInterests: { categoryId: string }[]
+  categories: { name: string; id: string }[];
+  userInterests: { categoryId: string }[];
+  disabled?: boolean;
 }
 
 export const InterestSelection = ({ categories, userInterests }: InterestSelectionProps) => {

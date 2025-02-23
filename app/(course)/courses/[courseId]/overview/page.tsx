@@ -40,16 +40,6 @@ const CourseOverview = async ({ params }: { params: { courseId: string } }) => {
 
   const instructor = await clerkClient.users.getUser(course.instructorId);
 
-  let level;
-
-  if (course.levelId) {
-    level = await db.level.findUnique({
-      where: {
-        id: course.levelId,
-      },
-    });
-  }
-
   // Check if course is completed
   const completedSections = await db.progress.count({
     where: {
@@ -134,10 +124,6 @@ const CourseOverview = async ({ params }: { params: { courseId: string } }) => {
           <div className="flex gap-2">
             <p className="font-bold">Price:</p>
             <p>{course.price === 0 || isInstructor ? "Free" : `₱ ${course.price}`}</p>
-          </div>
-          <div className="flex gap-2">
-            <p className="font-bold">Level:</p>
-            <p>{level?.name}</p>
           </div>
         </div>
 

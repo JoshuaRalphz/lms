@@ -9,20 +9,18 @@ export const POST = async (req: Request) => {
 
     const { categoryIds } = await req.json();
 
-    // Delete existing interests
-    await db.userInterest.deleteMany({
-      where: { userId }
-    });
+    // Use transaction for atomic operations
+    await db.$transaction([
+      db.userInterest.deleteMany({ where: { userId } }),
+      db.userInterest.createMany({
+        data: categoryIds.map((categoryId: string) => ({
+          userId,
+          categoryId
+        }))
+      })
+    ]);
 
-    // Create new interests
-    const interests = await db.userInterest.createMany({
-      data: categoryIds.map((categoryId: string) => ({
-        userId,
-        categoryId
-      }))
-    });
-
-    return NextResponse.json(interests);
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error saving interests:", error);
     return new NextResponse("Internal Error", { status: 500 });

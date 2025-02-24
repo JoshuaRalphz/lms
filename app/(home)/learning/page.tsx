@@ -180,7 +180,7 @@ const LearningPage = async () => {
             {/* Add Quiz Attempts Section */}
             <QuizAttemptsSection
               attempts={takenQuizzes}
-              emptyMessage="You haven't taken any quizzes yet."
+              emptyMessage="You haven't taken any assessments yet."
               buttonText="Take assessment"
               href="/quizzes"
             />
@@ -189,7 +189,7 @@ const LearningPage = async () => {
             <RecommendedSection 
               title="Recommended Courses"
               items={recommendedContent.courses}
-              emptyMessage="No recommended courses found based on your interests."
+              emptyMessage="No recommended webinar found based on your interests."
               buttonText="Explore More"
               href="/vid"
               renderItem={(item) => (

@@ -82,26 +82,26 @@ const CoursesPage = async ({ searchParams }: { searchParams: { category?: string
               {selectedCategory ? `${selectedCategory.name} Courses` : "Expand Your Knowledge"}
             </h1>
             <p className="text-base md:text-lg text-gray-200 mb-6 max-w-2xl mx-auto px-4">
-              Explore our comprehensive courses taught by industry experts and take your skills to the next level.
+              Explore our comprehensive webinar taught by industry experts and take your skills to the next level.
             </p>
             
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 max-w-4xl mx-auto px-2 mb-10">
               <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-1">{courseStats.totalCourses}</h3>
-                <p className="text-xs md:text-sm text-gray-200">Courses</p>
+                <p className="text-xs md:text-sm text-gray-200">Webinar</p>
               </div>
               <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
                   {courseStats.totalEnrollments}
                 </h3>
-                <p className="text-xs md:text-sm text-gray-200">Enrollments</p>
+                <p className="text-xs md:text-sm text-gray-200">Participants</p>
               </div>
               <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
                   {courseStats.totalLessons}
                 </h3>
-                <p className="text-xs md:text-sm text-gray-200">Lessons</p>
+                <p className="text-xs md:text-sm text-gray-200">Sessions</p>
               </div>
               <div className="text-center p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-1">

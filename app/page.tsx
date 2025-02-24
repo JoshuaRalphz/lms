@@ -107,15 +107,15 @@ export default async function Vid() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
             <div className="text-center">
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{stats.totalCourses}</h3>
-              <p className="text-sm md:text-base text-gray-200">Courses Available</p>
+              <p className="text-sm md:text-base text-gray-200">Webinar Available</p>
             </div>
             <div className="text-center">
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{stats.totalQuizzes}</h3>
-              <p className="text-sm md:text-base text-gray-200">Quizzes Available</p>
+              <p className="text-sm md:text-base text-gray-200">Assessment Available</p>
             </div>
             <div className="text-center">
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{stats.totalEnrollments}</h3>
-              <p className="text-sm md:text-base text-gray-200">Total Enrollments</p>
+              <p className="text-sm md:text-base text-gray-200">Total Participants</p>
             </div>
             <div className="text-center">
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{stats.totalUsers}</h3>
@@ -149,7 +149,7 @@ export default async function Vid() {
       <div className="container mx-auto px-4 py-20">
         <div className="mb-20">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Most Popular Courses</h2>
+            <h2 className="text-3xl font-bold">Most Popular Webinar</h2>
             <Link href="/vid">
               <Button variant="outline">Explore More</Button>
             </Link>
@@ -171,7 +171,7 @@ export default async function Vid() {
 
         <div className="mb-20">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Top Rated Courses</h2>
+            <h2 className="text-3xl font-bold">Top Rated Webinar</h2>
             <Link href="/vid">
               <Button variant="outline">Explore More</Button>
             </Link>
@@ -193,7 +193,7 @@ export default async function Vid() {
 
         <div className="mb-20">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Most Popular Quizzes</h2>
+            <h2 className="text-3xl font-bold">Most Popular Assessments</h2>
             <Link href="/quizzes">
               <Button variant="outline">Explore More</Button>
             </Link>
